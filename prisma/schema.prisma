@@ -7,6 +7,24 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model Company {
+    id            String   @id @default(uuid())
+    name          String
+    phone         String
+    address       String
+    addressNumber String
+    city          String
+    uf            String
+    createdAt     DateTime @default(now())
+
+    users         User[]
+    services      Service[]
+    professionals Professional[]
+    appointments  Appointment[]
+
+    @@map("companies")
+}
+
 model User {
     id          String   @id @default(uuid())
     role        String
@@ -15,6 +33,88 @@ model User {
     phoneNumber String   @unique
     dateOfBirth DateTime
     createdAt   DateTime @default(now())
+    companyId   String
+
+    appointments Appointment[]
+    company      Company       @relation(fields: [companyId], references: [id])
 
     @@map("users")
+}
+
+enum AppointmentStatus {
+    PENDING
+    CONFIRMED
+    CANCELED
+}
+
+model Appointment {
+    id             String            @id @default(uuid())
+    userId         String
+    serviceId      String
+    scheduledAt    DateTime
+    status         AppointmentStatus @default(PENDING)
+    createdAt      DateTime          @default(now())
+    professionalId String
+    companyId      String
+
+    user         User         @relation(fields: [userId], references: [id])
+    service      Service      @relation(fields: [serviceId], references: [id])
+    professional Professional @relation(fields: [professionalId], references: [id])
+    company      Company      @relation(fields: [companyId], references: [id])
+
+    @@map("appointments")
+}
+
+model Service {
+    id          String   @id @default(uuid())
+    name        String
+    description String?
+    duration    Int // Duração em minutos
+    price       Decimal  @db.Decimal(10, 2)
+    createdAt   DateTime @default(now())
+    companyId   String
+
+    appointments  Appointment[]
+    professionals ProfessionalOnService[]
+    company       Company                 @relation(fields: [companyId], references: [id])
+
+    @@map("services")
+}
+
+model Professional {
+    id           String        @id @default(uuid())
+    name         String
+    email        String        @unique
+    phoneNumber  String?
+    appointments Appointment[]
+    createdAt    DateTime      @default(now())
+    companyId    String
+
+    availabilities Availability[]
+    services       ProfessionalOnService[]
+    company        Company                 @relation(fields: [companyId], references: [id])
+
+    @@map("professionals")
+}
+
+model ProfessionalOnService {
+    professionalId String
+    serviceId      String
+
+    professional Professional @relation(fields: [professionalId], references: [id])
+    service      Service      @relation(fields: [serviceId], references: [id])
+
+    @@id([professionalId, serviceId])
+}
+
+model Availability {
+    id             String   @id @default(uuid())
+    professionalId String
+    dayOfWeek      Int
+    startTime      DateTime
+    endTime        DateTime
+
+    professional Professional @relation(fields: [professionalId], references: [id])
+
+    @@map("availabilities")
 }

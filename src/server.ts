@@ -1,7 +1,8 @@
 import fastify from "fastify";
 import cors from "@fastify/cors";
 
-import { routes } from "./routes";
+import { companiesRoutes } from "./routes/companies-routes";
+import { usersRoutes } from "./routes/users-routes";
 
 const app = fastify();
 
@@ -11,7 +12,8 @@ app.setErrorHandler((error, request, reply) => {
 
 const start = async () => {
   app.register(cors);
-  app.register(routes);
+  app.register(companiesRoutes);
+  app.register(usersRoutes);
 
   try {
     app

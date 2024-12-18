@@ -6,31 +6,33 @@ interface ICreateUser {
   email: string;
   phoneNumber: string;
   dateOfBirth: string;
+  companyId: string;
 }
 
 class CreateUserService {
-  async execute({ role, name, email, phoneNumber, dateOfBirth }: ICreateUser) {
+  async execute({
+    role,
+    name,
+    email,
+    phoneNumber,
+    dateOfBirth,
+    companyId,
+  }: ICreateUser) {
     try {
-      const user = {
-        role,
-        name,
-        email,
-        phoneNumber,
-        dateOfBirth,
-      };
-      /* const user = await prisma.user.create({
+      const user = await prisma.user.create({
         data: {
-          role: "admin",
+          role,
           name,
           email,
           phoneNumber,
-          dateOfBirth,
+          dateOfBirth: new Date(dateOfBirth),
+          companyId,
         },
-      }); */
+      });
 
       return user;
     } catch (error) {
-      console.log("Erro ao buscar usuários: ", error);
+      throw new Error("Erro ao criar usuário.");
     }
   }
 }
