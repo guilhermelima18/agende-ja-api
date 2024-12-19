@@ -8,6 +8,7 @@ const createUserSchema = z.object({
   email: z
     .string({ required_error: "E-mail é um campo obrigatório" })
     .email("E-mail inválido"),
+  password: z.string({ required_error: "Senha é um campo obrigatório" }),
   phoneNumber: z.string({ required_error: "Celular é um campo obrigatório" }),
   dateOfBirth: z.string({
     required_error: "Data de nascimento é um campo obrigatório",
@@ -19,7 +20,7 @@ const createUserSchema = z.object({
 
 class CreateUserController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { role, name, email, phoneNumber, dateOfBirth, companyId } =
+    const { role, name, email, password, phoneNumber, dateOfBirth, companyId } =
       createUserSchema.parse(request.body);
 
     const userService = new CreateUserService();
@@ -27,6 +28,7 @@ class CreateUserController {
       role,
       name,
       email,
+      password,
       phoneNumber,
       dateOfBirth,
       companyId,

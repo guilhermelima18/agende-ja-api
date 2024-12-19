@@ -4,6 +4,7 @@ interface ICreateUser {
   role: string;
   name: string;
   email: string;
+  password: string;
   phoneNumber: string;
   dateOfBirth: string;
   companyId: string;
@@ -14,6 +15,7 @@ class CreateUserService {
     role,
     name,
     email,
+    password,
     phoneNumber,
     dateOfBirth,
     companyId,
@@ -24,6 +26,7 @@ class CreateUserService {
           role,
           name,
           email,
+          password,
           phoneNumber,
           dateOfBirth: new Date(dateOfBirth),
           companyId,
