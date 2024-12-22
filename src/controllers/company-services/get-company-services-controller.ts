@@ -4,23 +4,38 @@ import { z } from "zod";
 import { GetCompanyServicesService } from "../../services/company-services/get-company-services-service";
 
 const getCompanyServicesSchema = z.object({
+  professionalId: z.string(),
   companyId: z.string(),
 });
 
 class GetCompanyServicesController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    let id;
+    let id_profissional, id_empresa;
     try {
-      const { companyId } = getCompanyServicesSchema.parse(request.query);
-      id = companyId;
+      const { professionalId, companyId } = getCompanyServicesSchema.parse(
+        request.query
+      );
+      id_profissional = professionalId;
+      id_empresa = companyId;
     } catch (error) {
-      throw new Error("ID da empresa é obrigatório");
+      throw new Error("ID do profissional e da empresa é obrigatório");
     }
 
     const companyServices = new GetCompanyServicesService();
-    const services = await companyServices.execute({ companyId: id });
+    const services = await companyServices.execute({
+      professionalId: id_profissional,
+      companyId: id_empresa,
+    });
 
-    return reply.code(200).send({ data: services });
+    const servicesMapped = services.map((service) => ({
+      id: service.id,
+      name: service.name,
+      description: service.description,
+      duration: service.duration,
+      price: service.price,
+    }));
+
+    return reply.code(200).send({ data: servicesMapped });
   }
 }
 
