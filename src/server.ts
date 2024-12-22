@@ -4,6 +4,9 @@ import cors from "@fastify/cors";
 import { authRoutes } from "./routes/auth-routes";
 import { companiesRoutes } from "./routes/companies-routes";
 import { usersRoutes } from "./routes/users-routes";
+import { companyServicesRoutes } from "./routes/company-services-routes";
+import { professionalsRoutes } from "./routes/professionals-routes";
+import { appointmentsRoutes } from "./routes/appointments-routes";
 
 const app = fastify();
 
@@ -16,6 +19,9 @@ const start = async () => {
   app.register(authRoutes);
   app.register(companiesRoutes);
   app.register(usersRoutes);
+  app.register(companyServicesRoutes);
+  app.register(professionalsRoutes);
+  app.register(appointmentsRoutes);
 
   try {
     app

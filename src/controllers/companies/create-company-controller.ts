@@ -4,12 +4,12 @@ import { z } from "zod";
 import { CreateCompanyService } from "../../services/companies/create-company-service";
 
 const createCompanySchema = z.object({
-  name: z.string({ required_error: "Nome é obrigatório" }),
-  phone: z.string({ required_error: "Telefone é obrigatório" }),
-  address: z.string({ required_error: "Endereço é obrigatório" }),
-  addressNumber: z.string({ required_error: "Número é obrigatório" }),
-  city: z.string({ required_error: "Cidade é obrigatório" }),
-  uf: z.string({ required_error: "Estado é obrigatório" }),
+  name: z.string(),
+  phone: z.string(),
+  address: z.string(),
+  addressNumber: z.string(),
+  city: z.string(),
+  uf: z.string(),
 });
 
 class CreateCompanyController {

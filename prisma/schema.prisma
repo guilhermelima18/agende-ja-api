@@ -83,14 +83,14 @@ model Service {
 }
 
 model Professional {
-    id           String        @id @default(uuid())
-    name         String
-    email        String        @unique
-    phoneNumber  String?
-    appointments Appointment[]
-    createdAt    DateTime      @default(now())
-    companyId    String
+    id          String   @id @default(uuid())
+    name        String
+    email       String   @unique
+    phoneNumber String?
+    createdAt   DateTime @default(now())
+    companyId   String
 
+    appointments   Appointment[]
     availabilities Availability[]
     services       ProfessionalOnService[]
     company        Company                 @relation(fields: [companyId], references: [id])

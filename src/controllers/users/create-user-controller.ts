@@ -4,18 +4,12 @@ import { z } from "zod";
 
 const createUserSchema = z.object({
   role: z.string(),
-  name: z.string({ required_error: "Nome é um campo obrigatório" }),
-  email: z
-    .string({ required_error: "E-mail é um campo obrigatório" })
-    .email("E-mail inválido"),
-  password: z.string({ required_error: "Senha é um campo obrigatório" }),
-  phoneNumber: z.string({ required_error: "Celular é um campo obrigatório" }),
-  dateOfBirth: z.string({
-    required_error: "Data de nascimento é um campo obrigatório",
-  }),
-  companyId: z.string({
-    required_error: "ID da empresa é um campo obrigatório",
-  }),
+  name: z.string(),
+  email: z.string().email(),
+  password: z.string(),
+  phoneNumber: z.string(),
+  dateOfBirth: z.string(),
+  companyId: z.string(),
 });
 
 class CreateUserController {

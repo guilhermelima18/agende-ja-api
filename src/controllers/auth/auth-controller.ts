@@ -3,8 +3,8 @@ import { z } from "zod";
 import { AuthService } from "../../services/auth/auth-service";
 
 const authSchema = z.object({
-  email: z.string({ required_error: "E-mail é obrigatório" }).email(),
-  password: z.string({ required_error: "Senha é obrigatório" }),
+  email: z.string().email(),
+  password: z.string(),
 });
 
 class AuthController {
