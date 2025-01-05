@@ -15,13 +15,9 @@ class AuthService {
         },
       });
 
-      if (!auth) {
-        throw new Error("Usuário ou senha incorretos!");
-      }
-
       return auth;
     } catch (error) {
-      throw new Error("Não foi possível buscar o usuário.");
+      console.error(error);
     }
   }
 }

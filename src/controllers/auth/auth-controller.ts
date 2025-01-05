@@ -17,6 +17,10 @@ class AuthController {
       password,
     });
 
+    if (!userAuth) {
+      return reply.code(401).send({ message: "Usuário não encontrado!" });
+    }
+
     return reply.code(200).send({ data: userAuth });
   }
 }
