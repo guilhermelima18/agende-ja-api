@@ -22,6 +22,8 @@ class CreateAppointmentsController {
       scheduledAt,
     } = createAppointmentsSchema.parse(request.body);
 
+    console.log(request.body);
+
     const appointmentService = new CreateAppointmentsService();
     const appointment = await appointmentService.execute({
       userId,

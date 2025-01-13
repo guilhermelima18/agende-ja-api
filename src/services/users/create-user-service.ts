@@ -21,6 +21,18 @@ class CreateUserService {
     companyId,
   }: ICreateUser) {
     try {
+      /* const userExists = await prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
+
+      console.log(userExists);
+
+      if (userExists) {
+        throw new Error("Já existe um usuário com esse e-mail!");
+      } */
+
       const user = await prisma.user.create({
         data: {
           role,
@@ -35,6 +47,7 @@ class CreateUserService {
 
       return user;
     } catch (error) {
+      console.log(error);
       throw new Error("Erro ao criar usuário.");
     }
   }
