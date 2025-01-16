@@ -1,3 +1,4 @@
+import { getAppointmentsAdapter } from "../../adapters/appointments/get-appointments-adapter";
 import { prisma } from "../../libs/prisma";
 
 interface IGetAppointments {
@@ -8,12 +9,23 @@ interface IGetAppointments {
 class GetAppointmentsService {
   async execute({ professionalId, companyId }: IGetAppointments) {
     try {
-      const appointments = await prisma.appointment.findMany({
+      const appointmentsPrisma = (await prisma.appointment.findMany({
         where: {
           professionalId,
           companyId,
         },
-      });
+        include: {
+          company: true,
+          professional: true,
+          service: true,
+          user: true,
+        },
+        orderBy: {
+          scheduledAt: "desc",
+        },
+      })) as any;
+
+      const appointments = getAppointmentsAdapter(appointmentsPrisma);
 
       return appointments?.length > 0 ? appointments : [];
     } catch (error) {
