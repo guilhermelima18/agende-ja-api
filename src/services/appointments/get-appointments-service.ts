@@ -2,7 +2,7 @@ import { getAppointmentsAdapter } from "../../adapters/appointments/get-appointm
 import { prisma } from "../../libs/prisma";
 
 interface IGetAppointments {
-  professionalId: string;
+  professionalId?: string;
   companyId: string;
 }
 
@@ -11,7 +11,7 @@ class GetAppointmentsService {
     try {
       const appointmentsPrisma = (await prisma.appointment.findMany({
         where: {
-          professionalId,
+          professionalId: professionalId ? professionalId : undefined,
           companyId,
         },
         include: {

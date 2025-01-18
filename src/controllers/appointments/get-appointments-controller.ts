@@ -3,7 +3,7 @@ import { z } from "zod";
 import { GetAppointmentsService } from "../../services/appointments/get-appointments-service";
 
 const getAppointmentsSchema = z.object({
-  professionalId: z.string(),
+  professionalId: z.string().optional(),
   companyId: z.string(),
 });
 
