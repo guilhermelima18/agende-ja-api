@@ -1,5 +1,9 @@
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { prisma } from "../../libs/prisma";
+import { gClient } from "../../libs/gzappy";
+
+dayjs.extend(utc);
 
 export async function sendDailyMessages() {
   try {
@@ -26,17 +30,24 @@ export async function sendDailyMessages() {
       const { name: professionalName } = schedule.professional;
       const { name: serviceName } = schedule.service;
 
-      const formattedDate = dayjs(schedule.scheduledAt).format(
-        "DD/MM/YYYY HH:mm"
-      );
+      const formattedDate = dayjs
+        .utc(schedule.scheduledAt)
+        .format("DD/MM/YYYY HH:mm");
 
-      const message = `Olá, ${customerName}! Este é um lembrete do seu agendamento de ${serviceName} em ${formattedDate} com a profissional ${professionalName}.`;
+      const message = [
+        `Olá, ${customerName}!, Este é um lembrete do seu agendamento de ${serviceName} em ${formattedDate} com a profissional ${professionalName}.`,
+      ];
 
       if (customerPhone) {
-        console.log(message);
-        console.log(
-          `Mensagem enviada para ${customerPhone} pelo profissional ${professionalName}`
-        );
+        let phone = `55${customerPhone}`;
+        try {
+          await gClient.sendMessage(message, [phone]);
+        } catch (error) {
+          console.log(
+            "Ocorreu um erro ao enviar a mensagem no WhatsApp!",
+            error
+          );
+        }
       }
     }
   } catch (error) {
