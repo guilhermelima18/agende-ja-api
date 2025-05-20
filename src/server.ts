@@ -34,9 +34,9 @@ const start = async () => {
       .then(async () => {
         console.log("Servidor rodando na porta: ", 3333);
 
-        (async () => {
+        /* (async () => {
           cron.schedule("0 8 * * *", async () => await sendDailyMessages());
-        })();
+        })(); */
       });
   } catch (error) {
     console.log("Ocorreu um erro no servidor: ", error);
