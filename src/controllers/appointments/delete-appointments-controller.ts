@@ -1,20 +1,32 @@
 import { FastifyReply, FastifyRequest } from "fastify";
+import z from "zod";
+
 import { DeleteAppointmentsService } from "../../services/appointments/delete-appointments-service";
 
-interface DeleteAppointmentsParams {
-  appointmentId: string;
-}
+const deleteAppointmentsSchema = z.object({
+  appointmentId: z.string(),
+});
 
 class DeleteAppointmentsController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { appointmentId } = request.params as DeleteAppointmentsParams;
+    try {
+      const parsedParams = deleteAppointmentsSchema.safeParse(request.params);
 
-    const appointmentService = new DeleteAppointmentsService();
-    const appointment = await appointmentService.execute({
-      appointmentId,
-    });
+      if (!parsedParams.success) {
+        return reply
+          .status(400)
+          .send({ error: "ID do agendamento é obrigatório." });
+      }
 
-    return reply.code(200).send({ data: appointment });
+      const appointmentService = new DeleteAppointmentsService();
+      const appointment = await appointmentService.execute({
+        appointmentId: parsedParams.data.appointmentId,
+      });
+
+      return reply.code(200).send({ data: appointment });
+    } catch (error) {
+      return reply.code(500).send({ error: "Erro interno do servidor." });
+    }
   }
 }
 

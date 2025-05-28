@@ -9,19 +9,25 @@ const authSchema = z.object({
 
 class AuthController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { email, password } = authSchema.parse(request.body);
+    try {
+      const { email, password } = authSchema.parse(request.body);
 
-    const authService = new AuthService();
-    const userAuth = await authService.execute({
-      email,
-      password,
-    });
+      const authService = new AuthService();
+      const userAuth = await authService.execute({
+        email,
+        password,
+      });
 
-    if (!userAuth) {
-      return reply.code(401).send({ message: "Usuário não encontrado!" });
+      return reply.code(200).send({ data: userAuth });
+    } catch (error: any) {
+      console.log(error);
+
+      if (error.message === "Usuário e/ou senha incorretos!") {
+        return reply.status(400).send({ error: error.message });
+      }
+
+      return reply.status(500).send({ error: "Erro interno do servidor." });
     }
-
-    return reply.code(200).send({ data: userAuth });
   }
 }
 

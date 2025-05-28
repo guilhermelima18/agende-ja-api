@@ -7,18 +7,18 @@ interface IAuth {
 
 class AuthService {
   async execute({ email, password }: IAuth) {
-    try {
-      const auth = await prisma.user.findUnique({
-        where: {
-          email,
-          password,
-        },
-      });
+    const auth = await prisma.user.findUnique({
+      where: {
+        email,
+        password,
+      },
+    });
 
-      return auth;
-    } catch (error) {
-      console.error(error);
+    if (!auth) {
+      throw new Error("Usuário e/ou senha incorretos!");
     }
+
+    return auth;
   }
 }
 
