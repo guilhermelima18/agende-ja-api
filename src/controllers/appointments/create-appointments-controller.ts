@@ -13,26 +13,31 @@ const createAppointmentsSchema = z.object({
 
 class CreateAppointmentsController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const {
-      userId,
-      serviceId,
-      professionalId,
-      companyId,
-      status,
-      scheduledAt,
-    } = createAppointmentsSchema.parse(request.body);
+    try {
+      const { success, data } = createAppointmentsSchema.safeParse(
+        request.body
+      );
 
-    const appointmentService = new CreateAppointmentsService();
-    const appointment = await appointmentService.execute({
-      userId,
-      serviceId,
-      professionalId,
-      companyId,
-      status,
-      scheduledAt,
-    });
+      if (!success) {
+        return reply.code(400).send({
+          error: "Existem campos obrigatórios que não foram passados.",
+        });
+      }
 
-    return reply.code(201).send({ data: appointment });
+      const appointmentService = new CreateAppointmentsService();
+      const appointment = await appointmentService.execute({
+        userId: data.userId,
+        serviceId: data.serviceId,
+        professionalId: data.professionalId,
+        companyId: data.companyId,
+        status: data.status,
+        scheduledAt: data.scheduledAt,
+      });
+
+      return reply.code(201).send({ data: appointment });
+    } catch (error) {
+      return reply.code(500).send({ error: "Erro interno do servidor." });
+    }
   }
 }
 

@@ -9,25 +9,25 @@ const getAppointmentsSchema = z.object({
 
 class GetAppointmentsController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    let id_empresa, id_profissional;
-
     try {
-      const { professionalId, companyId } = getAppointmentsSchema.parse(
-        request.query
-      );
-      id_profissional = professionalId;
-      id_empresa = companyId;
+      const { data } = getAppointmentsSchema.safeParse(request.query);
+
+      if (!data?.companyId || !data.professionalId) {
+        return reply
+          .code(400)
+          .send({ error: "professionalId ou companyId são obrigatórios." });
+      }
+
+      const appointmentsService = new GetAppointmentsService();
+      const appointments = await appointmentsService.execute({
+        professionalId: data.professionalId,
+        companyId: data.companyId,
+      });
+
+      return reply.code(200).send({ data: appointments });
     } catch (error) {
-      throw new Error("ID do profissional e da empresa são obrigatórios!");
+      return reply.code(500).send({ error: "Erro interno do servidor." });
     }
-
-    const appointmentsService = new GetAppointmentsService();
-    const appointments = await appointmentsService.execute({
-      professionalId: id_profissional,
-      companyId: id_empresa,
-    });
-
-    return reply.code(200).send({ data: appointments });
   }
 }
 

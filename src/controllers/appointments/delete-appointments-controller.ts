@@ -10,9 +10,11 @@ const deleteAppointmentsSchema = z.object({
 class DeleteAppointmentsController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const parsedParams = deleteAppointmentsSchema.safeParse(request.params);
+      const { success, data } = deleteAppointmentsSchema.safeParse(
+        request.params
+      );
 
-      if (!parsedParams.success) {
+      if (!success) {
         return reply
           .status(400)
           .send({ error: "ID do agendamento é obrigatório." });
@@ -20,7 +22,7 @@ class DeleteAppointmentsController {
 
       const appointmentService = new DeleteAppointmentsService();
       const appointment = await appointmentService.execute({
-        appointmentId: parsedParams.data.appointmentId,
+        appointmentId: data.appointmentId,
       });
 
       return reply.code(200).send({ data: appointment });

@@ -1,23 +1,28 @@
 import { FastifyReply, FastifyRequest } from "fastify";
+import z from "zod";
+
 import { DeleteUserService } from "../../services/users/delete-user-service";
 
-interface DeleteUserParams {
-  id: string;
-}
+const deleteUserSchema = z.object({
+  userId: z.string(),
+});
 
 class DeleteUserController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { id } = request.params as DeleteUserParams;
+    try {
+      const { success, data } = deleteUserSchema.safeParse(request.params);
 
-    const userService = new DeleteUserService();
+      if (!success) {
+        return reply.code(400).send({ error: "userId é obrigatório." });
+      }
 
-    if (!id) {
-      throw new Error("ID é obrigatório!");
+      const userService = new DeleteUserService();
+      const userDeleted = await userService.execute({ userId: data.userId });
+
+      return reply.code(200).send({ data: { id: userDeleted } });
+    } catch (error) {
+      return reply.code(500).send({ error: "Erro interno do servidor." });
     }
-
-    const userDeleted = await userService.execute({ id });
-
-    return reply.code(200).send({ data: { id: userDeleted } });
   }
 }
 

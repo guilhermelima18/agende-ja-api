@@ -8,19 +8,20 @@ const getUserSchema = z.object({
 
 class GetUserController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    let id;
-
     try {
-      const { companyId } = getUserSchema.parse(request.query);
-      id = companyId;
+      const { success, data } = getUserSchema.safeParse(request.query);
+
+      if (!success) {
+        return reply.code(400).send({ error: "companyId é obrigatório." });
+      }
+
+      const userService = new GetUserService();
+      const users = await userService.execute({ companyId: data.companyId });
+
+      return reply.status(200).send({ data: users });
     } catch (error) {
-      throw new Error("ID da empresa é obrigatório");
+      return reply.status(500).send({ error: "Erro interno do servidor." });
     }
-
-    const userService = new GetUserService();
-    const users = await userService.execute({ companyId: id });
-
-    return reply.status(200).send({ data: users });
   }
 }
 

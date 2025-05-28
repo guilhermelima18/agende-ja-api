@@ -9,9 +9,9 @@ const getProfesionalsSchema = z.object({
 class GetProfessionalsController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const parsedQuery = getProfesionalsSchema.safeParse(request.query);
+      const { success, data } = getProfesionalsSchema.safeParse(request.query);
 
-      if (!parsedQuery.success) {
+      if (!success) {
         return reply
           .status(400)
           .send({ error: "ID da empresa é obrigatório." });
@@ -19,13 +19,11 @@ class GetProfessionalsController {
 
       const professionalsService = new GetProfessionalsService();
       const professionals = await professionalsService.execute({
-        companyId: parsedQuery?.data?.companyId,
+        companyId: data.companyId,
       });
 
       return reply.code(200).send({ data: professionals });
-    } catch (error: any) {
-      console.log(error);
-
+    } catch (error) {
       return reply.status(500).send({ error: "Erro interno do servidor." });
     }
   }

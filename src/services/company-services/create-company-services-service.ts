@@ -17,21 +17,17 @@ class CreateCompanyServicesService {
     price,
     companyId,
   }: ICreateCompanyServices) {
-    try {
-      const companyService = await prisma.service.create({
-        data: {
-          name,
-          description,
-          duration,
-          price: new Decimal(price),
-          companyId,
-        },
-      });
+    const companyService = await prisma.service.create({
+      data: {
+        name,
+        description,
+        duration,
+        price: new Decimal(price),
+        companyId,
+      },
+    });
 
-      return companyService;
-    } catch (error) {
-      throw new Error("Não foi possível criar o serviço.");
-    }
+    return companyService;
   }
 }
 

@@ -14,20 +14,29 @@ const createCompanySchema = z.object({
 
 class CreateCompanyController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { name, phone, address, addressNumber, city, uf } =
-      createCompanySchema.parse(request.body);
+    try {
+      const { success, data } = createCompanySchema.safeParse(request.body);
 
-    const companyService = new CreateCompanyService();
-    const company = await companyService.execute({
-      name,
-      phone,
-      address,
-      addressNumber,
-      city,
-      uf,
-    });
+      if (!success) {
+        return reply
+          .code(400)
+          .send({ error: "Campos obrigatórios não foram passados." });
+      }
 
-    return reply.code(201).send({ data: company });
+      const companyService = new CreateCompanyService();
+      const company = await companyService.execute({
+        name: data.name,
+        phone: data.phone,
+        address: data.address,
+        addressNumber: data.addressNumber,
+        city: data.city,
+        uf: data.uf,
+      });
+
+      return reply.code(201).send({ data: company });
+    } catch (error) {
+      return reply.code(500).send({ error: "Erro interno do servidor." });
+    }
   }
 }
 

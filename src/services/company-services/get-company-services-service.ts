@@ -7,21 +7,18 @@ interface IGetCompanyServices {
 
 class GetCompanyServicesService {
   async execute({ professionalId, companyId }: IGetCompanyServices) {
-    try {
-      const companyServices = await prisma.service.findMany({
-        where: {
-          companyId,
-          professionals: {
-            some: {
-              professionalId,
-            },
+    const companyServices = await prisma.service.findMany({
+      where: {
+        companyId,
+        professionals: {
+          some: {
+            professionalId,
           },
         },
-      });
-      return companyServices?.length > 0 ? companyServices : [];
-    } catch (error) {
-      throw new Error("Não foi possível buscar os serviços.");
-    }
+      },
+    });
+
+    return companyServices?.length > 0 ? companyServices : [];
   }
 }
 

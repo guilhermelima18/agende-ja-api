@@ -6,9 +6,12 @@ interface IDeleteAppointments {
 
 class DeleteAppointmentsService {
   async execute({ appointmentId }: IDeleteAppointments) {
-    const appointment = await prisma.appointment.delete({
+    const appointment = await prisma.appointment.update({
       where: {
         id: appointmentId,
+      },
+      data: {
+        status: "CANCELED",
       },
     });
 

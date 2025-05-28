@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
+
 import { AuthService } from "../../services/auth/auth-service";
 
 const authSchema = z.object({
@@ -10,12 +11,18 @@ const authSchema = z.object({
 class AuthController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const { email, password } = authSchema.parse(request.body);
+      const { success, data } = authSchema.safeParse(request.body);
+
+      if (!success) {
+        return reply
+          .code(400)
+          .send({ error: "E-mail e/ou password são obrigatórios." });
+      }
 
       const authService = new AuthService();
       const userAuth = await authService.execute({
-        email,
-        password,
+        email: data.email,
+        password: data.email,
       });
 
       return reply.code(200).send({ data: userAuth });

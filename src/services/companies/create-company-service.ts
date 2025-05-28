@@ -18,22 +18,18 @@ class CreateCompanyService {
     city,
     uf,
   }: ICreateCompany) {
-    try {
-      const company = await prisma.company.create({
-        data: {
-          name,
-          phone,
-          address,
-          addressNumber,
-          city,
-          uf,
-        },
-      });
+    const company = await prisma.company.create({
+      data: {
+        name,
+        phone,
+        address,
+        addressNumber,
+        city,
+        uf,
+      },
+    });
 
-      return company;
-    } catch (error) {
-      throw new Error("Não foi possível criar a empresa.");
-    }
+    return company;
   }
 }
 

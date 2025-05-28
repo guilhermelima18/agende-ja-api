@@ -1,22 +1,18 @@
 import { prisma } from "../../libs/prisma";
 
 interface IDeleteUser {
-  id: string;
+  userId: string;
 }
 
 class DeleteUserService {
-  async execute({ id }: IDeleteUser) {
-    try {
-      const user = await prisma.user.delete({
-        where: {
-          id,
-        },
-      });
+  async execute({ userId }: IDeleteUser) {
+    const user = await prisma.user.delete({
+      where: {
+        id: userId,
+      },
+    });
 
-      return user.id;
-    } catch (error) {
-      throw new Error("Não foi possível excluir o usuário");
-    }
+    return user.id;
   }
 }
 

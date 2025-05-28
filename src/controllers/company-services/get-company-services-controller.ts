@@ -10,32 +10,35 @@ const getCompanyServicesSchema = z.object({
 
 class GetCompanyServicesController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    let id_profissional, id_empresa;
     try {
-      const { professionalId, companyId } = getCompanyServicesSchema.parse(
+      const { success, data } = getCompanyServicesSchema.safeParse(
         request.query
       );
-      id_profissional = professionalId;
-      id_empresa = companyId;
+
+      if (!success) {
+        return reply
+          .code(400)
+          .send({ error: "professionalId e companyId são obrigatórios." });
+      }
+
+      const companyServices = new GetCompanyServicesService();
+      const services = await companyServices.execute({
+        professionalId: data.professionalId,
+        companyId: data.companyId,
+      });
+
+      const servicesMapped = services.map((service) => ({
+        id: service.id,
+        name: service.name,
+        description: service.description,
+        duration: service.duration,
+        price: service.price,
+      }));
+
+      return reply.code(200).send({ data: servicesMapped });
     } catch (error) {
-      throw new Error("ID do profissional e da empresa é obrigatório");
+      return reply.code(500).send({ error: "Erro interno do servidor." });
     }
-
-    const companyServices = new GetCompanyServicesService();
-    const services = await companyServices.execute({
-      professionalId: id_profissional,
-      companyId: id_empresa,
-    });
-
-    const servicesMapped = services.map((service) => ({
-      id: service.id,
-      name: service.name,
-      description: service.description,
-      duration: service.duration,
-      price: service.price,
-    }));
-
-    return reply.code(200).send({ data: servicesMapped });
   }
 }
 

@@ -18,22 +18,18 @@ class CreateAppointmentsService {
     status,
     scheduledAt,
   }: ICreateAppointments) {
-    try {
-      const appointment = await prisma.appointment.create({
-        data: {
-          userId,
-          serviceId,
-          professionalId,
-          companyId,
-          status,
-          scheduledAt,
-        },
-      });
+    const appointment = await prisma.appointment.create({
+      data: {
+        userId,
+        serviceId,
+        professionalId,
+        companyId,
+        status,
+        scheduledAt,
+      },
+    });
 
-      return appointment;
-    } catch (error) {
-      throw new Error("Não foi possível criar um agendamento.");
-    }
+    return appointment;
   }
 }
 

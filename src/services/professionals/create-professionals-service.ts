@@ -9,30 +9,26 @@ interface ICreateProfessionals {
 
 class CreateProfessionalsService {
   async execute({ name, email, phoneNumber, companyId }: ICreateProfessionals) {
-    try {
-      const professionalExists = await prisma.professional.findUnique({
-        where: {
-          email,
-        },
-      });
+    const professionalExists = await prisma.professional.findUnique({
+      where: {
+        email,
+      },
+    });
 
-      if (professionalExists) {
-        throw new Error("Já existe um profissional com esse e-mail!");
-      }
-
-      const createProfessional = await prisma.professional.create({
-        data: {
-          name,
-          email,
-          phoneNumber,
-          companyId,
-        },
-      });
-
-      return createProfessional;
-    } catch (error) {
-      throw new Error("Não foi possível criar um profissional.");
+    if (professionalExists) {
+      throw new Error("Já existe um profissional com esse e-mail!");
     }
+
+    const createProfessional = await prisma.professional.create({
+      data: {
+        name,
+        email,
+        phoneNumber,
+        companyId,
+      },
+    });
+
+    return createProfessional;
   }
 }
 

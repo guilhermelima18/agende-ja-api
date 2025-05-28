@@ -38,8 +38,6 @@ class CreateUserController {
 
       return reply.status(201).send({ data: user });
     } catch (error: any) {
-      console.log(error);
-
       if (error.message === "Já existe um usuário com esse e-mail!") {
         return reply.status(400).send({ error: error.message });
       }

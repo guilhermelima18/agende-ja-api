@@ -12,20 +12,31 @@ const createCompanyServicesSchema = z.object({
 
 class CreateCompanyServicesController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { name, description, duration, price, companyId } =
-      createCompanyServicesSchema.parse(request.body);
+    try {
+      const { success, data } = createCompanyServicesSchema.safeParse(
+        request.body
+      );
 
-    const companyService = new CreateCompanyServicesService();
+      if (!success) {
+        return reply
+          .code(400)
+          .send({ error: "Campos obrigatórios não foram passados." });
+      }
 
-    const service = await companyService.execute({
-      name,
-      description,
-      duration,
-      price,
-      companyId,
-    });
+      const companyService = new CreateCompanyServicesService();
 
-    return reply.code(201).send({ data: service });
+      const service = await companyService.execute({
+        name: data.name,
+        description: data.description,
+        duration: data.duration,
+        price: data.price,
+        companyId: data.companyId,
+      });
+
+      return reply.code(201).send({ data: service });
+    } catch (error) {
+      return reply.code(500).send({ error: "Erro interno do servidor." });
+    }
   }
 }
 

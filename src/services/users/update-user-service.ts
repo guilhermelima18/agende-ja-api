@@ -9,32 +9,28 @@ interface IUpdateUser {
 
 class UpdateUserService {
   async execute({ id, name, email, phoneNumber }: IUpdateUser) {
-    try {
-      const userAlreadyExists = await prisma.user.findUnique({
-        where: {
-          id,
-        },
-      });
+    const userAlreadyExists = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
 
-      if (!userAlreadyExists) {
-        throw new Error("Usuário não existe!");
-      }
-
-      const updatedUser = await prisma.user.update({
-        data: {
-          name,
-          email,
-          phoneNumber,
-        },
-        where: {
-          id,
-        },
-      });
-
-      return updatedUser;
-    } catch (error) {
-      throw new Error(error as string);
+    if (!userAlreadyExists) {
+      throw new Error("Usuário não existe!");
     }
+
+    const updatedUser = await prisma.user.update({
+      data: {
+        name,
+        email,
+        phoneNumber,
+      },
+      where: {
+        id,
+      },
+    });
+
+    return updatedUser;
   }
 }
 

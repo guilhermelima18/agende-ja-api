@@ -16,13 +16,16 @@ export async function usersRoutes(fastify: FastifyInstance) {
     return userController.handle(request, reply);
   });
 
-  fastify.put("/users/:id", (request: FastifyRequest, reply: FastifyReply) => {
-    const userController = new UpdateUserController();
-    return userController.handle(request, reply);
-  });
+  fastify.put(
+    "/users/:userId",
+    (request: FastifyRequest, reply: FastifyReply) => {
+      const userController = new UpdateUserController();
+      return userController.handle(request, reply);
+    }
+  );
 
   fastify.delete(
-    "/users/:id",
+    "/users/:userId",
     (request: FastifyRequest, reply: FastifyReply) => {
       const userController = new DeleteUserController();
       return userController.handle(request, reply);
