@@ -22,7 +22,7 @@ class AuthController {
       const authService = new AuthService();
       const userAuth = await authService.execute({
         email: data.email,
-        password: data.email,
+        password: data.password,
       });
 
       return reply.code(200).send({ data: userAuth });

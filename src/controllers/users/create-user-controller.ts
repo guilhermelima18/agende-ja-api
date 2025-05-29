@@ -15,25 +15,23 @@ const createUserSchema = z.object({
 class CreateUserController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const {
-        role,
-        name,
-        email,
-        password,
-        phoneNumber,
-        dateOfBirth,
-        companyId,
-      } = createUserSchema.parse(request.body);
+      const { success, data } = createUserSchema.safeParse(request.body);
+
+      if (!success) {
+        return reply
+          .code(400)
+          .send({ error: "Campos obrigatórios não foram passados." });
+      }
 
       const userService = new CreateUserService();
       const user = await userService.execute({
-        role,
-        name,
-        email,
-        password,
-        phoneNumber,
-        dateOfBirth,
-        companyId,
+        role: data.role,
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        phoneNumber: data.phoneNumber,
+        dateOfBirth: data.dateOfBirth,
+        companyId: data.companyId,
       });
 
       return reply.status(201).send({ data: user });

@@ -4,14 +4,16 @@ import { prisma } from "../../libs/prisma";
 interface IGetAppointments {
   professionalId?: string;
   companyId: string;
+  userId?: string;
 }
 
 class GetAppointmentsService {
-  async execute({ professionalId, companyId }: IGetAppointments) {
+  async execute({ professionalId, companyId, userId }: IGetAppointments) {
     const appointmentsPrisma = (await prisma.appointment.findMany({
       where: {
         professionalId: professionalId ? professionalId : undefined,
         companyId,
+        userId: userId ? userId : undefined,
       },
       include: {
         company: true,

@@ -5,23 +5,23 @@ import { GetAppointmentsService } from "../../services/appointments/get-appointm
 const getAppointmentsSchema = z.object({
   professionalId: z.string().optional(),
   companyId: z.string(),
+  userId: z.string().optional(),
 });
 
 class GetAppointmentsController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const { data } = getAppointmentsSchema.safeParse(request.query);
+      const { success, data } = getAppointmentsSchema.safeParse(request.query);
 
-      if (!data?.companyId || !data.professionalId) {
-        return reply
-          .code(400)
-          .send({ error: "professionalId ou companyId são obrigatórios." });
+      if (!success) {
+        return reply.code(400).send({ error: "companyId são obrigatórios." });
       }
 
       const appointmentsService = new GetAppointmentsService();
       const appointments = await appointmentsService.execute({
         professionalId: data.professionalId,
         companyId: data.companyId,
+        userId: data.userId,
       });
 
       return reply.code(200).send({ data: appointments });
